@@ -4,31 +4,30 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    public AudioClip clip;
+    public AudioClip destructionSFX;
 
-    // Start is called before the first frame update
-    void Start()
+    // physical sim hits. For Unity to call this, at least one of the colliding objects
+	// needs to have their RigidBody component set to "Dynamic" for Body Type
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        // print("I'm hit collision!");
     }
 
-    // Update is called once per frame
-    void Update()
+    // This is called if the Collider on the game object has "Is Trigger" checked.
+	// Then it doesn't physically react to hits but still detects them
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
-    }
+        print("I'm hit!");
 
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        // Check if the other object is the projectile by its tag
-        if (collision.tag == "Laser")
+		// Check the other colliding object's tag to know if it's
+		// indeed a player projectile
+        if (collision.tag == "PlayerProjectile")
         {
-            print("I'm Hit");
+			// Play an audio clip in the scene and not attached to the alien
+			// so the sound keeps playing even after it's destroyed
+            AudioSource.PlayClipAtPoint(destructionSFX, Vector3.zero);
 
-            // Allows playing an audio clip even if the Alien is destroyed and removed from the scene
-            AudioSource.PlayClipAtPoint(clip, Vector2.zero);
-
-            // Destroy the Alien game object (the one this script is on)
+            // Destroy the alien game object
             Destroy(gameObject);
 
             // Destroy the projectile game object

@@ -5,48 +5,53 @@ public class EnemyController : MonoBehaviour
 {
     public float minPosX;
     public float maxPosX;
-    public float moveDistance;
-    public float timeStep;
 
-    private bool isMovingRight = true;
+    public float moveDistance = 1f;
+    public float timeStep = 1f;
+
+    bool isMovingRight = true;
 
     // Use this for initialization
     void Start()
     {
-        // Call the MoveEnemies function every timeStep interval
-        InvokeRepeating("MoveEnemies", timeStep, timeStep);
-    }
-
-    void MoveEnemies()
-    {
-        if (isMovingRight)
-        {
-            // Determine and apply the new position instantly
-            float newPositionX = transform.position.x + moveDistance;
-            transform.position = new Vector2(newPositionX, transform.position.y);
-            
-            // Check if the enemy group has reached the rightmost point
-            if (newPositionX >= maxPosX)
-            {
-                isMovingRight = false;
-            }
-        } 
-        else
-        {
-            float newPositionX = transform.position.x - moveDistance;
-            transform.position = new Vector2(newPositionX, transform.position.y);
-
-            // Check if the enemy group has reached the leftmost point
-            if (newPositionX <= minPosX)
-            {
-                isMovingRight = true;
-            }
-        }
+        // Invoke repeating will be called once after timeStep (2nd parameter) amount,
+        // and then repeatedly every timeStep (3rd parameter) amount
+        InvokeRepeating("Move", timeStep, timeStep);
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+    }
 
+    void Move()
+    {
+        if (isMovingRight)
+        {
+            // Moving right
+            Vector3 currentPos = transform.position;
+            Vector3 newPos = currentPos + new Vector3(moveDistance, 0f);
+            transform.position = newPos;
+
+            // If aliens group reached the right-most edge, flip their direction
+            if (transform.position.x >= maxPosX)
+            {
+                isMovingRight = false;
+            }
+        }
+        else
+        {
+            // Moving left
+            Vector3 currentPos = transform.position;
+            Vector3 newPos = currentPos - new Vector3(moveDistance, 0f);
+            transform.position = newPos;
+
+            // If aliens group reached the left-most edge, flip their direction
+            if (transform.position.x <= minPosX)
+            {
+                isMovingRight = true;
+            }
+        }
     }
 }
